@@ -4100,7 +4100,9 @@ body.is-locked {
 .sidebar-back { display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap); padding: 0 var(--space-3); color: var(--text-muted); font-size: var(--text-sm); text-decoration: none; }
 .sidebar-title { margin: var(--space-3) var(--space-3) var(--space-1); overflow: hidden; color: var(--text); font-size: var(--text-lg); font-weight: var(--weight-bold); text-overflow: ellipsis; white-space: nowrap; }
 
-.group-grid { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+/* auto-fill (not auto-fit) so a lone group stays card-sized instead of
+   stretching across the whole content column. */
+.group-grid { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); }
 .group-card { display: flex; flex-direction: column; min-height: 210px; color: var(--text); text-decoration: none; transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
 .group-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-lg); transform: translateY(-2px); }
 .group-card-top { display: flex; align-items: center; gap: var(--space-2); }

@@ -1,4 +1,4 @@
-import { el, avatar, icon, field } from './components.js';
+import { el, avatar, icon, field, formatDate } from './components.js';
 import { formatINR } from '../core/money.js';
 import { newId } from '../core/id.js';
 
@@ -23,7 +23,7 @@ export function expenseListItem(group, expense, { href, actionLabel = 'Edit' } =
     el('div.expense-row-icon', { 'aria-hidden': 'true' }, icon(categoryIcon(expense.category), 18)),
     el('div.fill', {}, [
       el('strong', {}, description),
-      el('p.muted.text-sm', {}, `${payer} · ${expense.category || 'Other'} · ${expense.date || ''}`),
+      el('p.muted.text-sm', {}, `${payer} · ${expense.category || 'Other'} · ${formatDate(expense.date)}`),
     ]),
     el('div.expense-row-amount', {}, money(expense.amount)),
     icon('chevron-right', 18),

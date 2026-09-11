@@ -6,3 +6,6 @@ Thumbs.db
 .env.*
 coverage/
 
+
+# Scratch files from local experimentation
+.tmp-probe/

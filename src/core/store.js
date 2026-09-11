@@ -89,6 +89,190 @@ export function migrate(raw) {
   };
 }
 
+/* ------------------------------------------------------------------ *
+ * Sample data
+ * ------------------------------------------------------------------ */
+
+/** Member ids for the sample group. Fixed so seeding is reproducible. */
+const DEMO = Object.freeze({
+  GROUP: 'grp_demo_goa',
+  NISCHAY: 'mem_demo_nischay',
+  RHEA: 'mem_demo_rhea',
+  ARJUN: 'mem_demo_arjun',
+  MEERA: 'mem_demo_meera',
+});
+
+/**
+ * Build the sample "Goa Trip" group shown to first-time visitors.
+ *
+ * Returns a fresh, fully-formed v3 group; it is NOT dispatched and NOT
+ * persisted, so the caller decides when (and whether) it enters the ledger.
+ *
+ * Every id, date and amount is a literal — no `Date.now()`, no `Math.random()`,
+ * no `newId()` — so two calls deep-equal each other and the demo looks the same
+ * on every device and in every test run.
+ *
+ * The data deliberately exercises the whole engine: two expenses with multiple
+ * payers, an `equal`, `shares`, `exact`, `adjustment` and `itemized` split, two
+ * expenses that only some of the group took part in, five categories, and one
+ * settlement already paid. Balances sum to exactly 0.
+ *
+ * @returns {object} a group ready for `dispatch({type: 'group/create', group})`
+ */
+export function seedDemoGroup() {
+  const { NISCHAY, RHEA, ARJUN, MEERA } = DEMO;
+
+  return {
+    id: DEMO.GROUP,
+    name: 'Goa Trip (sample)',
+    emoji: '🏖️',
+    type: 'trip',
+    createdAt: '2026-08-12T09:00:00.000Z',
+    members: [
+      { id: NISCHAY, name: 'Nischay', upi: 'nischay@okhdfcbank', colorIndex: 0 },
+      { id: RHEA, name: 'Rhea Kapoor', upi: 'rhea.k@ybl', colorIndex: 1 },
+      { id: ARJUN, name: 'Arjun Menon', upi: 'arjun1998@paytm', colorIndex: 2 },
+      { id: MEERA, name: 'Meera Iyer', upi: 'meera@oksbi', colorIndex: 3 },
+    ],
+    expenses: [
+      {
+        // Two people put the flights on their own cards.
+        id: 'exp_demo_flights',
+        description: 'Flights to Goa (4 tickets)',
+        amount: 2480000,
+        paidBy: [{ memberId: NISCHAY, paise: 1240000 }, { memberId: RHEA, paise: 1240000 }],
+        splitType: 'equal',
+        participants: [NISCHAY, RHEA, ARJUN, MEERA],
+        splitData: {},
+        category: 'Travel',
+        date: '2026-08-14',
+        notes: 'Booked three weeks ahead.',
+        createdAt: '2026-08-14T06:30:00.000Z',
+      },
+      {
+        // Arjun took the sea-facing suite, so he carries a double share.
+        id: 'exp_demo_villa',
+        description: 'Beach villa, 3 nights',
+        amount: 3150000,
+        paidBy: [{ memberId: RHEA, paise: 3150000 }],
+        splitType: 'shares',
+        participants: [NISCHAY, RHEA, ARJUN, MEERA],
+        splitData: { [NISCHAY]: 1, [RHEA]: 1, [ARJUN]: 2, [MEERA]: 1 },
+        category: 'Stay',
+        date: '2026-08-14',
+        notes: 'Arjun took the sea-facing suite — double share.',
+        createdAt: '2026-08-14T15:10:00.000Z',
+      },
+      {
+        // Itemised: each dish goes to whoever ate it, tax and tip pro-rata.
+        id: 'exp_demo_dinner',
+        description: 'Dinner at Gunpowder',
+        amount: 270400,
+        paidBy: [{ memberId: ARJUN, paise: 270400 }],
+        splitType: 'itemized',
+        participants: [NISCHAY, RHEA, ARJUN, MEERA],
+        splitData: {
+          items: [
+            { id: 'itm_demo_prawn', name: 'Prawn balchao', amount: 68000, participants: [NISCHAY, ARJUN] },
+            { id: 'itm_demo_thali', name: 'Goan fish thali', amount: 45000, participants: [RHEA] },
+            { id: 'itm_demo_xacuti', name: 'Veg xacuti', amount: 39000, participants: [MEERA] },
+            { id: 'itm_demo_beer', name: 'Kings beer x4', amount: 96000, participants: [NISCHAY, RHEA, ARJUN, MEERA] },
+          ],
+          tax: 12400,
+          tip: 10000,
+          discount: 0,
+        },
+        category: 'Food',
+        date: '2026-08-15',
+        notes: '',
+        createdAt: '2026-08-15T16:05:00.000Z',
+      },
+      {
+        // Only the two who actually rode the scooters.
+        id: 'exp_demo_scooter',
+        description: 'Scooter rental, 2 days',
+        amount: 160000,
+        paidBy: [{ memberId: NISCHAY, paise: 160000 }],
+        splitType: 'equal',
+        participants: [NISCHAY, ARJUN],
+        splitData: {},
+        category: 'Travel',
+        date: '2026-08-15',
+        notes: 'Rhea and Meera stayed with the cab.',
+        createdAt: '2026-08-15T04:45:00.000Z',
+      },
+      {
+        // Exact amounts: the guide charged per person, not per head.
+        id: 'exp_demo_trek',
+        description: 'Dudhsagar falls trek',
+        amount: 600000,
+        paidBy: [{ memberId: MEERA, paise: 600000 }],
+        splitType: 'exact',
+        participants: [NISCHAY, RHEA, ARJUN, MEERA],
+        splitData: { [NISCHAY]: 175000, [RHEA]: 145000, [ARJUN]: 145000, [MEERA]: 135000 },
+        category: 'Activities',
+        date: '2026-08-16',
+        notes: 'Nischay hired the extra guide.',
+        createdAt: '2026-08-16T03:20:00.000Z',
+      },
+      {
+        // Nischay sat this one out.
+        id: 'exp_demo_scuba',
+        description: 'Scuba diving at Grande Island',
+        amount: 990000,
+        paidBy: [{ memberId: RHEA, paise: 990000 }],
+        splitType: 'equal',
+        participants: [RHEA, ARJUN, MEERA],
+        splitData: {},
+        category: 'Activities',
+        date: '2026-08-16',
+        notes: '',
+        createdAt: '2026-08-16T09:00:00.000Z',
+      },
+      {
+        id: 'exp_demo_souvenirs',
+        description: 'Cashews and souvenirs',
+        amount: 345000,
+        paidBy: [{ memberId: MEERA, paise: 345000 }],
+        splitType: 'equal',
+        participants: [NISCHAY, RHEA, ARJUN, MEERA],
+        splitData: {},
+        category: 'Shopping',
+        date: '2026-08-17',
+        notes: '',
+        createdAt: '2026-08-17T11:40:00.000Z',
+      },
+      {
+        // Adjustment: one extra bag, then the rest split evenly.
+        id: 'exp_demo_cab',
+        description: 'Airport cab home',
+        amount: 118000,
+        paidBy: [{ memberId: ARJUN, paise: 60000 }, { memberId: MEERA, paise: 58000 }],
+        splitType: 'adjustment',
+        participants: [NISCHAY, RHEA, ARJUN, MEERA],
+        splitData: { [NISCHAY]: 20000 },
+        category: 'Travel',
+        date: '2026-08-18',
+        notes: 'Nischay paid the oversize-baggage charge.',
+        createdAt: '2026-08-18T05:15:00.000Z',
+      },
+    ],
+    settlements: [
+      {
+        id: 'stl_demo_flights',
+        from: NISCHAY,
+        to: RHEA,
+        paise: 250000,
+        date: '2026-08-19',
+        method: 'upi',
+        ref: 'SPLITUPIDEMO01',
+        note: 'Part payment towards the villa',
+      },
+    ],
+    recurring: [],
+  };
+}
+
 /** Clear all locally stored data. */
 export function resetAll() {
   state = EMPTY_STATE();
@@ -348,9 +532,15 @@ function normalizeExpense(raw, group) {
 }
 
 function normalizePayers(value, fallbackId, amount, validMembers) {
+  // v1 stored a single payer as a bare member-id string (`paidBy: 'mem_x'`);
+  // v2 moved it to `paidById`/`payerId`. Both become the v3 Payer[] shape, with
+  // the whole expense attributed to that one person.
+  const legacyId = typeof value === 'string'
+    ? value
+    : typeof fallbackId === 'string' ? fallbackId : null;
   const source = Array.isArray(value)
     ? value
-    : typeof fallbackId === 'string' ? [{ memberId: fallbackId, paise: amount }] : [];
+    : legacyId ? [{ memberId: legacyId, paise: amount }] : [];
   const payers = source
     .filter((payer) => isObject(payer) && validMembers.has(payer.memberId) && Number.isInteger(payer.paise) && payer.paise > 0)
     .map((payer) => ({ memberId: payer.memberId, paise: payer.paise }));

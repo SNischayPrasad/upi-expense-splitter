@@ -29,7 +29,7 @@ UPI deep links are a convenience, not proof of payment. Always verify the recipi
 Requirements: Node.js 20 or later. There are no production dependencies to install.
 
 ```bash
-git clone https://github.com/Nischay2008/upi-expense-splitter.git
+git clone https://github.com/SNischayPrasad/upi-expense-splitter.git
 cd upi-expense-splitter
 npm test
 npm start
@@ -82,7 +82,7 @@ The included [deploy workflow](.github/workflows/deploy-pages.yml) publishes eve
 2. Push to `main`.
 3. After the workflow completes, the site is available at:
 
-   `https://nischay2008.github.io/upi-expense-splitter/`
+   `https://snischayprasad.github.io/upi-expense-splitter/`
 
 If you fork the repository, update the clone URL and Pages address for your GitHub account.
 
