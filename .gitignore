@@ -1,0 +1,8 @@
+# Local tooling and operating-system noise
+node_modules/
+.DS_Store
+Thumbs.db
+.env
+.env.*
+coverage/
+

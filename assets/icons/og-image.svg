@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="SplitUPI — split bills, settle over UPI">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="55%" stop-color="#312e81"/>
+      <stop offset="100%" stop-color="#4c1d95"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1040" cy="120" r="260" fill="#6366f1" opacity="0.18"/>
+  <circle cx="120" cy="560" r="200" fill="#a855f7" opacity="0.16"/>
+  <rect x="88" y="150" width="120" height="120" rx="34" fill="url(#mark)"/>
+  <g transform="translate(88 150)" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M40 36h44"/>
+    <path d="M40 52h44"/>
+    <path d="M40 36c18 0 27 7 27 17s-9 17-27 17h-1l31 30"/>
+  </g>
+  <text x="240" y="242" font-family="Segoe UI, Inter, system-ui, sans-serif" font-size="82" font-weight="700" fill="#ffffff">SplitUPI</text>
+  <text x="88" y="378" font-family="Segoe UI, Inter, system-ui, sans-serif" font-size="52" font-weight="600" fill="#e0e7ff">Split bills. Settle in one tap over UPI.</text>
+  <text x="88" y="452" font-family="Segoe UI, Inter, system-ui, sans-serif" font-size="32" fill="#a5b4fc">Minimal settlements · UPI deep links &amp; QR · Works offline · No account</text>
+  <g transform="translate(88 500)">
+    <rect width="340" height="62" rx="31" fill="#ffffff" opacity="0.12"/>
+    <text x="30" y="40" font-family="Segoe UI, Inter, system-ui, sans-serif" font-size="26" fill="#ffffff">₹ upi://pay — one tap</text>
+  </g>
+</svg>
