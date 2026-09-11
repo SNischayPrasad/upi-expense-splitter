@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>SplitUPI — Split bills, settle over UPI</title>
+
+<meta name="description" content="Split bills with your flatmates or trip group and settle up in one tap over UPI. Works offline, stores everything on your device, needs no account." />
+<meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0b0b12" media="(prefers-color-scheme: dark)" />
+<meta name="color-scheme" content="light dark" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="SplitUPI" />
+<meta name="mobile-web-app-capable" content="yes" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="SplitUPI — Split bills, settle over UPI" />
+<meta property="og:description" content="Group expenses, minimal settlements, and a one-tap UPI payment for every debt. No account, no server, works offline." />
+<meta property="og:image" content="assets/icons/og-image.svg" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+<a class="skip-link" href="#view">Skip to main content</a>
+
+<div id="app" class="app app-shell">
+
+  <header class="app-header" id="app-header">
+    <a class="brand" href="#/" aria-label="SplitUPI home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="28" height="28" role="img" aria-label="SplitUPI logo">
+          <defs>
+            <linearGradient id="brandGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#6366f1" />
+              <stop offset="100%" stop-color="#a855f7" />
+            </linearGradient>
+          </defs>
+          <rect x="1" y="1" width="30" height="30" rx="9" fill="url(#brandGrad)" />
+          <path d="M10 21.5c1.6 1.2 3.3 1.8 5.2 1.8 2.6 0 4.2-1.1 4.2-2.9 0-1.6-1.1-2.4-3.9-3.1l-1.4-.4c-2.9-.8-4.4-2.2-4.4-4.5 0-2.8 2.4-4.7 6-4.7 1.8 0 3.4.4 4.8 1.2"
+                fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" />
+          <circle cx="22.5" cy="11" r="1.6" fill="#fff" />
+        </svg>
+      </span>
+      <span class="brand-name">Split<span class="brand-accent">UPI</span></span>
+    </a>
+
+    <nav class="app-header-actions header-actions" aria-label="Application">
+      <button class="btn-icon" id="theme-toggle" type="button" aria-label="Switch colour theme" title="Switch theme"></button>
+      <a class="btn-icon" href="#/settings" aria-label="Settings" title="Settings" id="settings-link"></a>
+    </nav>
+  </header>
+
+  <aside class="sidebar app-sidebar" id="app-sidebar" aria-label="Sections"></aside>
+
+  <main id="view" class="app-main" tabindex="-1">
+    <div class="boot" role="status" aria-live="polite">
+      <div class="boot-spinner" aria-hidden="true"></div>
+      <p>Loading SplitUPI…</p>
+      <noscript>
+        <p class="boot-noscript">
+          SplitUPI needs JavaScript. Everything runs in your browser — there is no
+          server to fall back to.
+        </p>
+      </noscript>
+    </div>
+  </main>
+
+  <nav class="bottom-nav app-tabbar" id="app-tabbar" aria-label="Primary"></nav>
+
+</div>
+
+<div id="toast-root" class="toast-root" aria-live="polite" role="status"></div>
+<div id="modal-root"></div>
+
+<script type="module">
+  // Apply the persisted theme before first paint so there is no flash.
+  try {
+    const raw = localStorage.getItem('splitupi:state:v3');
+    const theme = raw ? (JSON.parse(raw)?.settings?.theme ?? 'system') : 'system';
+    if (theme === 'dark' || theme === 'light') {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+  } catch { /* private mode or corrupt state — fall through to system theme */ }
+</script>
+
+<script type="module" src="src/ui/app.js"></script>
+
+<script type="module">
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {
+        /* Offline support is a progressive enhancement; ignore failures. */
+      });
+    });
+  }
+</script>
+</body>
+</html>
